@@ -144,14 +144,16 @@ function insertPlayersBase() {
             // if (element[6]==teamId & element[5] > 0) console.log(element);
           });
           console.log("playersFF -" , playersFF.length);
+          global.playersBase = playersToBd;
+
           return dbQuery(insertUpdatePlayersSql, playersFF);
       })
       .then(result => {
-        dbPool.end();
+        // dbPool.end();
         resolve(true);
       })
       .catch(error => {
-        dbPool.end();
+        // dbPool.end();
         reject(error);
       })
   })
@@ -164,24 +166,30 @@ function insertPlayersBase() {
 alter table Yu6lr7ef8O.players AUTO_INCREMENT = 1;
  */
 function updatePlayersBase(){
-  dbQuery("delete FROM Yu6lr7ef8O.players where id>0; alter table Yu6lr7ef8O.players AUTO_INCREMENT = 1;")
-  .then(()=>{
-    return insertPlayersBase();
-  })
-  .catch((err)=>{
-    console.log("Clear players table err --", err)
-  })
-  .then(resp=> {
-      console.log("Calculation time", new Date() - startTime, "ms");
-      // console.log(dbQuery("SELECT count(name) FROM `Yu6lr7ef8O`.`players`"));
+
+  return new Promise((res, rej) => {
+    dbQuery("delete FROM Yu6lr7ef8O.players where id>0; alter table Yu6lr7ef8O.players AUTO_INCREMENT = 1;")
+    .then(()=>{
+      return insertPlayersBase();
+    })
+    .catch((err)=>{
+      console.log("Clear players table err --", err);
+      rej();
+    })
+    .then(resp=> {
+        console.log("Calculation time", new Date() - startTime, "ms");
+        // console.log(dbQuery("SELECT count(name) FROM `Yu6lr7ef8O`.`players`"));
+        res(resp)
+    })
+    .catch(err=> {
+        console.log(err);
+        console.log("Calculation time", new Date() - startTime, "ms");
+        rej();
+      });
 
   })
-  .catch(err=> {
-      console.log(err);
-      console.log("Calculation time", new Date() - startTime, "ms");
-    });
-}
+};
  
-updatePlayersBase();
-//  module.exports = updatePlayersBase;
+// updatePlayersBase();
+module.exports = updatePlayersBase;
 
