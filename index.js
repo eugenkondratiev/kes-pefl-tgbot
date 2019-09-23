@@ -6,8 +6,9 @@ const find = require('./model/find-by-name');
 const Telegraf = require('telegraf')
 const Extra = require('telegraf/extra')
 const Markup = require('telegraf/markup')
+const config = require('./config.json');
 
-const bot = new Telegraf("656256695:AAEsbCIJliup5UdfaKD8kOyevFbCZF2IyDk")
+const bot = new Telegraf(config.token)
 
 async function startUp() {
   try {
