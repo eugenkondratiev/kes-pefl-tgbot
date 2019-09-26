@@ -58,10 +58,6 @@ const insertUpdatePlayersSql = "INSERT INTO `Yu6lr7ef8O`.`players` (`name`, `nat
 " VALUES ? " + 
 " ON DUPLICATE KEY UPDATE name = VALUES(name),  nation = VALUES(nation), age = VALUES(age)" + 
 ", position = VALUES(position), type = VALUES(type), teamId = VALUES(teamId), ff = VALUES(ff), href = VALUES(href);" ;
-// const insertUpdatePlayersSql = "INSERT INTO `Yu6lr7ef8O`.`players` (`name`, `nation`, `age`, `position`, `type`, `teamId`, `ff`, `href`)" + 
-// " VALUES ? ;"
-// " ON DUPLICATE KEY UPDATE name = VALUES(name),  nation = VALUES(nation), age = VALUES(age)" + 
-// ", position = VALUES(position), type = VALUES(type), teamId = VALUES(teamId), ff = VALUES(ff), href = VALUES(href);" ;
 
 let startTime, endTime;
 

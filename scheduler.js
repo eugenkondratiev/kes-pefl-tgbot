@@ -1,6 +1,6 @@
 
   const schedule = require('node-schedule');
-  const getPlayers = require('./model/get-players-base');
+  const getPlayers = require('./model/parse-players-base');
    
   const ruleEveryID = {hour: [3,23], minute: 35, second: 14, dayOfWeek: [2, 4, 6]};
   const ruleEveryID2 = {hour: 1, minute: 25, second: 14, dayOfWeek: [2, 4, 6]};
