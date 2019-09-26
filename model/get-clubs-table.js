@@ -22,7 +22,6 @@ module.exports = function() {
 
     .catch(err => {
         console.log("get Clubs error - ", err); 
-        // dbPool.end()
         rej();
     })
     .then( ()=> {
@@ -40,16 +39,9 @@ module.exports = function() {
     .catch(err => {
         console.log("get Nations error - ", err);
         rej();
-        // dbPool.end()
     });
   })  
 
-
-    // .then(() => {dbPool.end()})
-    // .catch(err => {
-    //         console.log("End DB error - ", err);
-    //         // dbPool.end()
-    //     });
 
 }
     

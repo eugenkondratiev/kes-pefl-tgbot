@@ -1,4 +1,11 @@
 require('./scheduler')();
+const COMMAND_HELP = `
+/find имя_часть_имени  - поиск игрока по имени
+/exot id_нации  - поиск игроков нужной нации( пока по номеру)
+/next - следующая порция игроков
+/prev - прошлая порция игроков
+/start - старт
+/xxx - рестарт`;
 
 const dbPool = require('./model/connection-pool');
 const Find = require('./model/find-by-name');
@@ -18,30 +25,59 @@ async function startUp() {
     await require('./model/get-clubs-table')();
      bot.use(Telegraf.log())
     ;
+
     bot.hears(/\/find ([\sA-Яа-яЁёЪъ]+)/i, (ctx) => {
       const _id = ctx.message.from.id;
       if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
       // console.log("ctx.tg - ", ctx.tg);
       // console.log("ctx.match - ",ctx.match);
       const nameToFind = ctx.match[1];
+      if (nameToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    )
       // nameToFind.splice(0, 6);
       console.log("Find request heard", nameToFind);
       const resp = ctx.db[_id].findByName(nameToFind);
       console.log('resp - ', resp)
       return ctx.replyWithHTML(resp, {parse_mode : "HTML"})
-      // return ctx.reply(dressUp(resp))
-      // return ctx.reply(JSON.stringify(resp))
     })
 
+    bot.hears(/\/exot ([\d]{1,4})/i, (ctx) => {
+      const _id = ctx.message.from.id;
+      if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
+      // console.log("ctx.tg - ", ctx.tg);
+      console.log("ctx.match - ",ctx.match);
+      const nationToFind = ctx.match[1];
+      console.log("Exot request heard", nationToFind);
+      const resp = ctx.db[_id].findByNation(nationToFind);
+      console.log('resp - ', resp)
+      return ctx.replyWithHTML(resp, {parse_mode : "HTML"})
+    })
+    bot.command('next', (ctx) => {
+      const _id = ctx.message.from.id;
+
+      const resp = ctx.db[_id].getNextPortionOfPlayers();
+        console.log('resp NEXT- ', resp)
+        return ctx.replyWithHTML(resp, {parse_mode : "HTML"})
+      });
+
+    bot.command('prev', (ctx) => {
+        const _id = ctx.message.from.id;
+  
+        const resp = ctx.db[_id].getPrevPortionOfPlayers();
+          console.log('resp PREV- ', resp)
+          return ctx.replyWithHTML(resp, {parse_mode : "HTML"})
+        }) ;
+      
     bot.command(['xxx', 'start'], (ctx) => {
-        return ctx.reply(`/find имя_часть_имени  - поиск игрока по имени
-        /xxx - рестарт`    )
+        return ctx.reply(COMMAND_HELP)
       })
-      bot.on('message', (ctx) => {
-        return ctx.reply(`/find имя_часть_имени  - поиск игрока по имени
-        /xxx - рестарт`    )
+    
+    bot.on('message', (ctx) => {
+        return ctx.reply(COMMAND_HELP)
       })
-    bot.launch();
+
+
+
+     bot.launch();
   
   } catch (error) {
     console.log("startUpError - ", error)
