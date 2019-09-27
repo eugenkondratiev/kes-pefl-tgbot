@@ -3,7 +3,7 @@ const pefl = 'http://pefl.ru/';
 
 class PeflSearcher {
     constructor(_playersBase) {
-        this.playersBase = _playersBase;
+        this.playersBase = _playersBase || global.playersBase;
         this.searchResponse = [];
         this.viewPosition = 0;
         this.portion = 10;
@@ -57,7 +57,7 @@ class PeflSearcher {
                             break;
                         case 7:
                                 element = cel == '' 
-                                        ? '- ' 
+                                        ? '' 
                                         : ('<a href="'+ pefl + cel 
                                     + '">ссылка</a>  '); 
                                 break;
@@ -96,6 +96,13 @@ class PeflSearcher {
                 ? this.searchResponse
                 : this.getPlayersPortion()
         )
+    }
+    
+    findById(_id) {
+        // this.viewPosition = 0;
+        const nationsResponse = global.nationBase.filter(n => n[1].toLowerCase().includes(_nation));
+
+        return nationsResponse;
     }
     
     getNextPortionOfPlayers() {
