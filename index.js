@@ -42,74 +42,105 @@ async function startUp() {
 Всего игроков - ${global.playersBase.length}\n`;
 
     bot.hears(/\/find ([\sA-Яа-яЁёЪъ]+)/i, (ctx) => {
-      const _id = ctx.message.from.id;
-      if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
-      // console.log("ctx.tg - ", ctx.tg);
-      // console.log("ctx.match - ",ctx.match);
-      const nameToFind = ctx.match[1];
-      ctx.nameToFind = nameToFind;
-      if (nameToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    )
-      // nameToFind.splice(0, 6);
-      console.log("Find request heard", nameToFind);
-      const resp = ctx.db[_id].findByName(nameToFind);
-      console.log('resp - ', resp)
-      return ctx.replyWithHTML(resp,  moreLesskeyboard)
-      // return ctx.replyWithHTML(resp,  Extra.markup(moreLesskeyboard))
+      try {
+        const _id = ctx.message.from.id;
+        if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
+        // console.log("ctx.tg - ", ctx.tg);
+        // console.log("ctx.match - ",ctx.match);
+        const nameToFind = ctx.match[1];
+        ctx.nameToFind = nameToFind;
+        if (nameToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    ).catch(err => {console.log(err)});
+        // nameToFind.splice(0, 6);
+        console.log("Find request heard", nameToFind);
+        const resp = ctx.db[_id].findByName(nameToFind);
+        console.log('resp - ', resp)
+        return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
+        // return ctx.replyWithHTML(resp,  Extra.markup(moreLesskeyboard))
+          
+      } catch (error) {
+        console.log(error); 
+        return 'ok'
+      }
       
     })
 
     bot.hears(/\/exot ([\d]{1,4})/i, (ctx) => {
-      const _id = ctx.message.from.id;
-      if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
-      // console.log("ctx.tg - ", ctx.tg);
-      console.log("ctx.match - ",ctx.match);
-      const nationToFind = ctx.match[1];
-      ctx.nationToFind = nationToFind;
-      console.log("Exot request heard", nationToFind);
-      const resp = ctx.db[_id].findByNation(nationToFind);
-      console.log('resp - ', resp);
-      // return ctx.replyWithHTML(resp,  Extra.HTML().markup(testInlinKb))
-      // return ctx.replyWithHTML(resp, Extra.markup(moreLesskeyboard))
-      return ctx.replyWithHTML(resp, moreLesskeyboard)
+      try {
+        const _id = ctx.message.from.id;
+        if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
+        // console.log("ctx.tg - ", ctx.tg);
+        console.log("ctx.match - ",ctx.match);
+        const nationToFind = ctx.match[1];
+        ctx.nationToFind = nationToFind;
+        console.log("Exot request heard", nationToFind);
+        const resp = ctx.db[_id].findByNation(nationToFind);
+        console.log('resp - ', resp);
+        // return ctx.replyWithHTML(resp,  Extra.HTML().markup(testInlinKb))
+        // return ctx.replyWithHTML(resp, Extra.markup(moreLesskeyboard))
+        return ctx.replyWithHTML(resp, moreLesskeyboard).catch(err => {console.log(err)});
+          
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
       // return ctx.replyWithHTML(resp, {parse_mode : "HTML"}, moreLesskeyboard)
     })
 
 
     bot.hears(/\/id ([\sA-Яа-яЁёЪъ]+)/i, (ctx) => {
+      try {
       // const _id = ctx.message.from.id;
       // if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
       // console.log("ctx.tg - ", ctx.tg);
       console.log("ctx.match - ",ctx.match);
       const nationToFind = ctx.match[1];
       // ctx.nameToFind = nameToFind;
-      if (nationToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    )
+      if (nationToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    ).catch(err => {console.log(err)});
       // nameToFind.splice(0, 6);
       console.log("ID request heard", nationToFind);
       const resp = require('./model/find-id')(nationToFind);
       console.log('resp - ', resp)
-      return ctx.replyWithHTML(resp)
+      return ctx.replyWithHTML(resp).catch(err => {console.log(err)});
       // return ctx.replyWithHTML(resp,  moreLesskeyboard)
+        
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
       
     })
 
 
     bot.command('next', (ctx) => {
-      const _id = ctx.message.from.id;
+      try {
+        const _id = ctx.message.from.id;
 
-      const resp = ctx.db[_id].getNextPortionOfPlayers();
-        console.log('resp NEXT- ', resp)
-        return ctx.replyWithHTML(resp,  moreLesskeyboard)
+        const resp = ctx.db[_id].getNextPortionOfPlayers();
+          console.log('resp NEXT- ', resp)
+          return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
+          
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
       });
 
     bot.command('prev', (ctx) => {
+      try {
         const _id = ctx.message.from.id;
   
         const resp = ctx.db[_id].getPrevPortionOfPlayers();
           console.log('resp PREV- ', resp)
-          return ctx.replyWithHTML(resp, Extra.HTML().markup(testInlinKb))
+          return ctx.replyWithHTML(resp, Extra.HTML().markup(testInlinKb)).catch(err => {console.log(err)});
+        
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
         }) ;
 
     bot.action('next', (ctx) => {
+      try {
           // console.log('ACTION NEXT  -   ', ctx);
 
           const _id = ctx.update.callback_query.from.id;
@@ -117,30 +148,59 @@ async function startUp() {
     
           const resp = ctx.db[_id].getNextPortionOfPlayers();
             // console.log('resp NEXT- ', resp)
-            return ctx.replyWithHTML(resp,  moreLesskeyboard)
+            return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
+        
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
           });
     
     bot.action('prev', (ctx) => {
-          const _id = ctx.update.callback_query.from.id;
-          // const _id = ctx.message.from.id;
+      try {
+        const _id = ctx.update.callback_query.from.id;
+        // const _id = ctx.message.from.id;
+    
+          const resp = ctx.db[_id].getPrevPortionOfPlayers();
+            // console.log('resp PREV- ', resp)
+            return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
       
-            const resp = ctx.db[_id].getPrevPortionOfPlayers();
-              // console.log('resp PREV- ', resp)
-              return ctx.replyWithHTML(resp,  moreLesskeyboard);
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
             }) ;      
 
     bot.command(['xxx', 'start'], (ctx) => {
-        return ctx.reply(COMMAND_HELP)
+        try {
+          return ctx.reply(COMMAND_HELP).catch(err => {console.log(err)});
+        
+        } catch (error) {
+          console.log(error);
+          return 'ok'
+        }
       })
     
     bot.on('message', (ctx) => {
-        return ctx.reply(COMMAND_HELP)
+      try {
+        return ctx.reply(COMMAND_HELP).catch(err => {console.log(err)});
+        
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
       })
 
 
+      try {
+        bot.launch();
+     
+      } catch (error) {
+        console.log(error);
+        return 'ok'
+      }
 
-     bot.launch();
-  
+     
   } catch (error) {
     console.log("startUpError - ", error)
   }
@@ -170,4 +230,11 @@ process.on('beforeExit', (code) => {
   dbPool.end();
 });
 
-startUp();
+try {
+ 
+startUp(); 
+
+} catch (error) {
+  console.log("main bot loop error - ", error);
+  return 'ok'
+}

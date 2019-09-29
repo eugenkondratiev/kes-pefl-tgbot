@@ -5,6 +5,7 @@
    
   const ruleEveryID = {hour: [3,23], minute: 50, second: 14, dayOfWeek: [2, 4, 6]};
  
+ 
   module.exports = function() {
     const schGetPlayers = schedule.scheduleJob(ruleEveryID, async function(){
       console.log(new Date(), 'Get players');
