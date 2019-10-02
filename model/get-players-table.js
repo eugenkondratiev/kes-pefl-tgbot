@@ -16,7 +16,7 @@ module.exports = function() {
         }); 
         } catch (error) {
             console.log(error);
-            rej();
+            rej(error);
         }
 
     })
@@ -24,7 +24,7 @@ module.exports = function() {
     .catch(err => {
         console.log("get players error - ", err); 
         // dbPool.end()
-        rej();
+        rej(err);
     })
   })  
 

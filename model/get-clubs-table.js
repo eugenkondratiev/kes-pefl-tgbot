@@ -15,14 +15,14 @@ module.exports = function() {
         }); ;
         } catch (error) {
             console.log(error);
-            rej();
+            rej(error);
         }
 
     })
 
     .catch(err => {
         console.log("get Clubs error - ", err); 
-        rej();
+        rej(err);
     })
     .then( ()=> {
         global.nationBase = [];
@@ -36,7 +36,7 @@ module.exports = function() {
     })
     .catch(err => {
         console.log("get Nations error - ", err);
-        rej();
+        rej(err);
     });
   })  
 
