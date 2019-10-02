@@ -8,7 +8,6 @@ module.exports = function() {
     dbQuery('SELECT * FROM Yu6lr7ef8O.clubs;')
     .then(result => {
         global.clubsBase = []; 
-        // console.log(result);
         try {
             result.rows.forEach(function(row, i, arr) {
                 const clubId = parseInt(row[ID]);
@@ -26,7 +25,6 @@ module.exports = function() {
         rej();
     })
     .then( ()=> {
-        // console.log(clubsBase, clubsBase.length);
         global.nationBase = [];
         return dbQuery('SELECT * FROM Yu6lr7ef8O.nations_short;');
     })
@@ -35,7 +33,6 @@ module.exports = function() {
             nationBase[nation[ID]] = nation;
         })
         res(nationBase)
-        // console.log(nationBase);
     })
     .catch(err => {
         console.log("get Nations error - ", err);

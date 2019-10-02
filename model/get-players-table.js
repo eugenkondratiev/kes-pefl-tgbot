@@ -7,7 +7,6 @@ module.exports = function() {
     dbQuery('SELECT * FROM Yu6lr7ef8O.players;')
     .then(result => {
         global.playersBase = []; 
-        // console.log(result);
         try {
             result.rows.forEach(function(row, i, arr) {
                 const playerRecord = [].concat(row);
@@ -15,7 +14,6 @@ module.exports = function() {
                 global.playersBase.push(playerRecord);
                 res(playersBase)
         }); 
-        // console.log(global.playersBase);
         } catch (error) {
             console.log(error);
             rej();
@@ -31,11 +29,7 @@ module.exports = function() {
   })  
 
 
-    // .then(() => {dbPool.end()})
-    // .catch(err => {
-    //         console.log("End DB error - ", err);
-    //         // dbPool.end()
-    //     });
+
 
 }
     
