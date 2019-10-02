@@ -4,6 +4,7 @@ const ID = 0;
 
 module.exports = function() {
   return new Promise((res,rej) => {
+      console.log('SELECT * FROM Yu6lr7ef8O.clubs;');
     dbQuery('SELECT * FROM Yu6lr7ef8O.clubs;')
     .then(result => {
         global.clubsBase = []; 

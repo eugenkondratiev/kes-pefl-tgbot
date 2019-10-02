@@ -45,17 +45,13 @@ async function startUp() {
       try {
         const _id = ctx.message.from.id;
         if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
-        // console.log("ctx.tg - ", ctx.tg);
-        // console.log("ctx.match - ",ctx.match);
         const nameToFind = ctx.match[1];
         ctx.nameToFind = nameToFind;
         if (nameToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    ).catch(err => {console.log(err)});
-        // nameToFind.splice(0, 6);
         console.log("Find request heard", nameToFind);
         const resp = ctx.db[_id].findByName(nameToFind);
         console.log('resp - ', resp)
         return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
-        // return ctx.replyWithHTML(resp,  Extra.markup(moreLesskeyboard))
           
       } catch (error) {
         console.log(error); 
@@ -68,40 +64,30 @@ async function startUp() {
       try {
         const _id = ctx.message.from.id;
         if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
-        // console.log("ctx.tg - ", ctx.tg);
         console.log("ctx.match - ",ctx.match);
         const nationToFind = ctx.match[1];
         ctx.nationToFind = nationToFind;
         console.log("Exot request heard", nationToFind);
         const resp = ctx.db[_id].findByNation(nationToFind);
         console.log('resp - ', resp);
-        // return ctx.replyWithHTML(resp,  Extra.HTML().markup(testInlinKb))
-        // return ctx.replyWithHTML(resp, Extra.markup(moreLesskeyboard))
         return ctx.replyWithHTML(resp, moreLesskeyboard).catch(err => {console.log(err)});
           
       } catch (error) {
         console.log(error);
         return 'ok'
       }
-      // return ctx.replyWithHTML(resp, {parse_mode : "HTML"}, moreLesskeyboard)
     })
 
 
     bot.hears(/\/id ([\sA-Яа-яЁёЪъ]+)/i, (ctx) => {
       try {
-      // const _id = ctx.message.from.id;
-      // if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
-      // console.log("ctx.tg - ", ctx.tg);
       console.log("ctx.match - ",ctx.match);
       const nationToFind = ctx.match[1];
-      // ctx.nameToFind = nameToFind;
       if (nationToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    ).catch(err => {console.log(err)});
-      // nameToFind.splice(0, 6);
       console.log("ID request heard", nationToFind);
       const resp = require('./model/find-id')(nationToFind);
       console.log('resp - ', resp)
       return ctx.replyWithHTML(resp).catch(err => {console.log(err)});
-      // return ctx.replyWithHTML(resp,  moreLesskeyboard)
         
       } catch (error) {
         console.log(error);
@@ -141,13 +127,9 @@ async function startUp() {
 
     bot.action('next', (ctx) => {
       try {
-          // console.log('ACTION NEXT  -   ', ctx);
-
+ 
           const _id = ctx.update.callback_query.from.id;
-          // const _id = ctx.message.from.id;
-    
           const resp = ctx.db[_id].getNextPortionOfPlayers();
-            // console.log('resp NEXT- ', resp)
             return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
         
       } catch (error) {
@@ -159,10 +141,8 @@ async function startUp() {
     bot.action('prev', (ctx) => {
       try {
         const _id = ctx.update.callback_query.from.id;
-        // const _id = ctx.message.from.id;
     
           const resp = ctx.db[_id].getPrevPortionOfPlayers();
-            // console.log('resp PREV- ', resp)
             return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
       
       } catch (error) {
