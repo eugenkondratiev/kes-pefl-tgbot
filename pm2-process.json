@@ -1,0 +1,9 @@
+{
+    "script" : "index.js",
+    "watch": true,
+    "ignore_watch" : ["node_modules", "data", ".git", ".vscode"],
+    "watch_options" : {
+        "followSymlinks" : false
+    },
+    "name" : "kestgbot"
+}
