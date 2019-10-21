@@ -1,18 +1,21 @@
-const dbPool = require('./connection-pool');
+const dbPool = require('./connection-pool')();
 const dbQuery = require('./db').dbQuery;
 const ID = 0;
 
 module.exports = function() {
   return new Promise((res,rej) => {
-      console.log('SELECT * FROM Yu6lr7ef8O.clubs;');
-    dbQuery('SELECT * FROM Yu6lr7ef8O.clubs;')
+      console.log('SELECT * FROM pefl.clubs;');
+    dbQuery('SELECT * FROM pefl.clubs;')
     .then(result => {
         global.clubsBase = []; 
         try {
             result.rows.forEach(function(row, i, arr) {
                 const clubId = parseInt(row[ID]);
                 global.clubsBase[clubId] = row;
-        }); ;
+
+        }); 
+        console.log(new Date(),"  global.clubsBase - ", global.clubsBase.length);
+        ;
         } catch (error) {
             console.log(error);
             rej(error);
@@ -26,12 +29,14 @@ module.exports = function() {
     })
     .then( ()=> {
         global.nationBase = [];
-        return dbQuery('SELECT * FROM Yu6lr7ef8O.nations_short;');
+        return dbQuery('SELECT * FROM pefl.nations_short;');
     })
     .then((nations) => {
         nations.rows.forEach(nation => {
-            nationBase[nation[ID]] = nation;
-        })
+            global.nationBase[nation[ID]] = nation;
+        });
+        console.log(new Date(),"  global.nationBase - ", global.nationBase.length);
+
         res(nationBase)
     })
     .catch(err => {

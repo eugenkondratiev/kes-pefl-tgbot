@@ -1,7 +1,7 @@
-require('./scheduler')();
+﻿require('./scheduler')();
 
 
-const dbPool = require('./model/connection-pool');
+const dbPool = require('./model/connection-pool')();
 const Find = require('./model/pefl-searcher');
 
 const Telegraf = require('telegraf')
@@ -12,6 +12,7 @@ const config = require('./config.json');
 const bot = new Telegraf(config.token)
 bot.context.db = {
 }
+
 
 const moreLesskeyboard = Markup.inlineKeyboard([
   Markup.callbackButton('еще 10', 'next'),
@@ -40,7 +41,9 @@ async function startUp() {
 /start - старт
 /xxx - рестарт
 Всего игроков - ${global.playersBase.length}\n`;
-
+    const PREV_NEXT_EARLY = `Используйте /next и /prev 
+    когда уже найден набор игроков командами 
+    /find или /exot`
     bot.hears(/\/find ([\sA-Яа-яЁёЪъ]+)/i, (ctx) => {
       try {
         const _id = ctx.message.from.id;
@@ -114,11 +117,12 @@ async function startUp() {
     bot.command('prev', (ctx) => {
       try {
         const _id = ctx.message.from.id;
-  
+        // if (ctx.db[_id] ) {
+          if (!ctx.db[_id] ) return ctx.reply(PREV_NEXT_EARLY).catch(err => {console.log(err)});
         const resp = ctx.db[_id].getPrevPortionOfPlayers();
           console.log('resp PREV- ', resp)
           return ctx.replyWithHTML(resp, Extra.HTML().markup(testInlinKb)).catch(err => {console.log(err)});
-        
+        // } 
       } catch (error) {
         console.log(error);
         return 'ok'
@@ -127,7 +131,7 @@ async function startUp() {
 
     bot.action('next', (ctx) => {
       try {
- 
+        if (!ctx.db[_id] ) return ctx.reply(PREV_NEXT_EARLY).catch(err => {console.log(err)}); 
           const _id = ctx.update.callback_query.from.id;
           const resp = ctx.db[_id].getNextPortionOfPlayers();
             return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});

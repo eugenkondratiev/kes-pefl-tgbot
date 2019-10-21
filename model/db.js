@@ -1,4 +1,4 @@
-const dbPool = require('./connection-pool');
+const dbPool = require('./connection-pool')();
 
 
 function dbExecute(_sql, values) {
@@ -30,7 +30,10 @@ function dbQuery(_sql, values) {
                 , 
                 [values],
                  function(err, rows, fields){
-                    if (err) reject(err);
+                    if (err) {
+                        console.log('dbQuery error !!!!!  ', _sql);
+                        reject(err)
+                    };
                     resolve({rows, fields})               
                 }
             );
