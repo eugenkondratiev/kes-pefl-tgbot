@@ -31,8 +31,10 @@ async function startUp() {
     await require('./model/get-players-table')();
     await require('./model/get-clubs-table')();
 
-     bot.use(Telegraf.log())
-    const COMMAND_HELP = `
+     bot.use(Telegraf.log());
+
+    function getCommandHelp()  {
+      return `
 /find имя_часть_имени  - поиск игрока по имени (напр. /find хиса)
 /exot id_нации  - поиск игроков нужной нации( пока по номеру) (напр /exot 190)
 /id часть_названия_нации  - поиск id нужной нации (напр /id тринид)
@@ -41,6 +43,7 @@ async function startUp() {
 /start - старт
 /xxx - рестарт
 Всего игроков - ${global.playersBase.length}\n`;
+    }
     const PREV_NEXT_EARLY = `Используйте /next и /prev 
     когда уже найден набор игроков командами 
     /find или /exot`
@@ -53,7 +56,7 @@ async function startUp() {
         if (nameToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    ).catch(err => {console.log(err)});
         console.log("Find request heard", nameToFind);
         const resp = ctx.db[_id].findByName(nameToFind);
-        console.log('resp - ', resp)
+        console.log('resp - ', resp);
         return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
           
       } catch (error) {
@@ -157,7 +160,7 @@ async function startUp() {
 
     bot.command(['xxx', 'start'], (ctx) => {
         try {
-          return ctx.reply(COMMAND_HELP).catch(err => {console.log(err)});
+          return ctx.reply(getCommandHelp()).catch(err => {console.log(err)});
         
         } catch (error) {
           console.log(error);
@@ -167,7 +170,7 @@ async function startUp() {
     
     bot.on('message', (ctx) => {
       try {
-        return ctx.reply(COMMAND_HELP).catch(err => {console.log(err)});
+        return ctx.reply(getCommandHelp()).catch(err => {console.log(err)});
         
       } catch (error) {
         console.log(error);

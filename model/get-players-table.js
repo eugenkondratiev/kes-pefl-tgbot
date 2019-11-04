@@ -12,14 +12,18 @@ module.exports = function() {
                 const playerRecord = [].concat(row);
                 playerRecord.shift();
                 global.playersBase.push(playerRecord);
-
               })
-
             res(playersBase);
-            console.log(new Date(),"  global.playersBase - ", global.playersBase.length);
+            const logRecord = new Date() + "  global.playersBase - " + global.playersBase.length + "\n\r";
+            console.log(logRecord);
+            require('fs').appendFile("./data/actionlog.txt", logRecord, err=>{if (err) console.error(err)});
+
         ; 
         } catch (error) {
             console.log(error);
+            const logRecord = new Date() + "  global.playersBase - error " + error + "\n\r";
+            require('fs').appendFile("./data/actionlog.txt", logRecord, err=>{if (err) console.error(err)});
+
             rej(error);
         }
 
