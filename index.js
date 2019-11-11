@@ -12,7 +12,7 @@ const config = require('./config.json');
 const bot = new Telegraf(config.token)
 bot.context.db = {
 }
-
+const logUser =  require('./model/id-log');
 
 const moreLesskeyboard = Markup.inlineKeyboard([
   Markup.callbackButton('еще 10', 'next'),
@@ -51,6 +51,7 @@ async function startUp() {
       try {
         const _id = ctx.message.from.id;
         if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
+        logUser(ctx);
         const nameToFind = ctx.match[1];
         ctx.nameToFind = nameToFind;
         if (nameToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    ).catch(err => {console.log(err)});
@@ -70,6 +71,7 @@ async function startUp() {
       try {
         const _id = ctx.message.from.id;
         if (!ctx.db[_id]) ctx.db[_id] = new Find(global.playersBase );
+        logUser(ctx);
         console.log("ctx.match - ",ctx.match);
         const nationToFind = ctx.match[1];
         ctx.nationToFind = nationToFind;
@@ -88,6 +90,7 @@ async function startUp() {
     bot.hears(/\/id ([\sA-Яа-яЁёЪъ]+)/i, (ctx) => {
       try {
       console.log("ctx.match - ",ctx.match);
+      logUser(ctx);
       const nationToFind = ctx.match[1];
       if (nationToFind.length < 3) return ctx.reply(`Пожалуйста, вводите 3 и более букв`    ).catch(err => {console.log(err)});
       console.log("ID request heard", nationToFind);
@@ -106,6 +109,7 @@ async function startUp() {
     bot.command('next', (ctx) => {
       try {
         const _id = ctx.message.from.id;
+        if (!ctx.db[_id] ) return ctx.reply(PREV_NEXT_EARLY).catch(err => {console.log(err)});
 
         const resp = ctx.db[_id].getNextPortionOfPlayers();
           console.log('resp NEXT- ', resp)
@@ -134,8 +138,8 @@ async function startUp() {
 
     bot.action('next', (ctx) => {
       try {
+        const _id = ctx.update.callback_query.from.id;
         if (!ctx.db[_id] ) return ctx.reply(PREV_NEXT_EARLY).catch(err => {console.log(err)}); 
-          const _id = ctx.update.callback_query.from.id;
           const resp = ctx.db[_id].getNextPortionOfPlayers();
             return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
         
@@ -148,7 +152,7 @@ async function startUp() {
     bot.action('prev', (ctx) => {
       try {
         const _id = ctx.update.callback_query.from.id;
-    
+        if (!ctx.db[_id] ) return ctx.reply(PREV_NEXT_EARLY).catch(err => {console.log(err)});     
           const resp = ctx.db[_id].getPrevPortionOfPlayers();
             return ctx.replyWithHTML(resp,  moreLesskeyboard).catch(err => {console.log(err)});
       
@@ -160,6 +164,7 @@ async function startUp() {
 
     bot.command(['xxx', 'start'], (ctx) => {
         try {
+          logUser(ctx);
           return ctx.reply(getCommandHelp()).catch(err => {console.log(err)});
         
         } catch (error) {
@@ -170,6 +175,7 @@ async function startUp() {
     
     bot.on('message', (ctx) => {
       try {
+        logUser(ctx);
         return ctx.reply(getCommandHelp()).catch(err => {console.log(err)});
         
       } catch (error) {
