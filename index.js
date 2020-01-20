@@ -1,6 +1,5 @@
 ﻿require('./scheduler')();
 
-
 const dbPool = require('./model/connection-pool')();
 const Find = require('./model/pefl-searcher');
 
@@ -30,7 +29,6 @@ async function startUp() {
   try {
     await require('./model/get-players-table')();
     await require('./model/get-clubs-table')();
-
      bot.use(Telegraf.log());
 
     function getCommandHelp()  {
@@ -63,8 +61,7 @@ async function startUp() {
       } catch (error) {
         console.log(error); 
         return 'ok'
-      }
-      
+      }      
     })
 
     bot.hears(/\/exot ([\d]{1,4})/i, (ctx) => {
