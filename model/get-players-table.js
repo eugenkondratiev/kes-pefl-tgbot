@@ -14,15 +14,15 @@ module.exports = function() {
                 playerRecord.shift();
                 global.playersBase.push(playerRecord);
               })
-            res(playersBase);
-            const logRecord = new Date() + "  global.playersBase - " + global.playersBase.length + "\r";
+            const logRecord = new Date() + "  global.playersBase - " + global.playersBase.length + "\n";
             console.log(logRecord);
             require('fs').appendFile("./data/actionlog.txt", logRecord, err=>{if (err) console.error(err)});
 
+            res(playersBase);
         ; 
         } catch (error) {
             console.log(error);
-            const logRecord = new Date() + "  global.playersBase - error " + error + "\r";
+            const logRecord = new Date() + "  global.playersBase - error " + error + "\n";
             require('fs').appendFile("./data/actionlog.txt", logRecord, err=>{if (err) console.error(err)});
 
             rej(error);
