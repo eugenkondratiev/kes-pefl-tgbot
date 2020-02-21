@@ -1,11 +1,13 @@
-const dbPool = require('./connection-pool')();
-const dbQuery = require('./db').dbQuery;
+// const dbPool = require('./connection-pool-eco')();
+// const dbQuery = require('./db').dbQuery;
 const ID = 0;
 
 module.exports = function() {
+  const dbQuery = require('./db').dbQuery;
+  console.log("Get to playsers update function")
   return new Promise((res,rej) => {
-    dbQuery('SELECT * FROM Yu6lr7ef8O.players;')
-    // dbQuery('SELECT * FROM pefl.players;')
+    //dbQuery('SELECT * FROM Yu6lr7ef8O.players;')
+    dbQuery('SELECT * FROM pefl.players;')
     .then(result => {
         global.playersBase = []; 
         try {

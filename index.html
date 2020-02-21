@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nations stat</title>
+    <link rel="stylesheet" href="public/stat.css">
+    <!-- <link rel="stylesheet" href="/public/styles.css"> -->
+</head>
+
+<body>
+    <header class="find-form">
+        <h5>Зачаточный каркас страницы поиска игроков</h5>
+	<h2>Идет переход на другую БД. Данные временно некорректны</h2>	
+        <p> Просто небольшая надстройка над  <a href="https://mylene.net.ru/pefl/nations/" target="_blank">сайтом статиски национальностей.</a> </p>
+        <p> Повторяется только функционал telegram бота</p>
+        <p> Возможно, функционал будет улучшаться и разрастаться, если будет спрос и интересные задачи</p>
+        <p id="current-stat"></p>
+        <div class="form-wparper flex-center">
+            <div class="input-wrapper">
+                <div class="string-inputs">
+                    <label for="player-name">Имя</label><input type="text" name="player-name" id="player-name" value="">
+                </div>
+                <button id="player-button">Найти</button>
+            </div>
+            <div class="input-wrapper">
+                <div class="string-inputs">
+                    <label for="nation">Нация</label>
+                    <select id="nation">
+                        <option value="" selected>-</option>
+
+                    </select>
+                    <!-- <label for="nation">Нация(id)</label><input type="text" name="nation" id="nation" value=""> -->
+                </div>
+                <button id="nation-button">Найти</button>
+
+            </div>
+        </div>
+    </header>
+    <section class="content-section" id="search-result">
+
+    </section>
+    <!-- <section class="content-section" id="by-nation">
+
+    </section> -->
+    <script src="public/stat.js"></script>
+    <!-- <script src="/public/app.js"></script> -->
+</body>
+
+</html>

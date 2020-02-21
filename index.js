@@ -1,6 +1,7 @@
 ﻿require('./scheduler')();
-
-const dbPool = require('./model/connection-pool')();
+const peflServer = require('./app');
+//const dbPool = require('./model/connection-pool')();
+const dbPool = require('./model/connection-pool-eco')();
 const Find = require('./model/pefl-searcher');
 
 const Telegraf = require('telegraf')
@@ -27,8 +28,9 @@ const testInlinKb = (m) => {
 
 async function startUp() {
   try {
-    await require('./model/get-players-table')();
-    await require('./model/get-clubs-table')();
+    const answerPlayers = await require('./model/get-players-table')();
+    // console.log("answerPlayers ", answerPlayers);
+    const answerClubs = await require('./model/get-clubs-table')();
      bot.use(Telegraf.log());
 
     function getCommandHelp()  {
@@ -221,7 +223,8 @@ process.on('beforeExit', (code) => {
 });
 
 try {
- 
+
+ peflServer();
 startUp(); 
 
 } catch (error) {

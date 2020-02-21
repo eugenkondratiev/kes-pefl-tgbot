@@ -1,13 +1,13 @@
-const dbPool = require('./connection-pool')();
+const dbPool = require('./connection-pool-eco')();
 const dbQuery = require('./db').dbQuery;
 const ID = 0;
 
 module.exports = function() {
   return new Promise((res,rej) => {
-    console.log('SELECT * FROM Yu6lr7ef8O.clubs;');
-    dbQuery('SELECT * FROM Yu6lr7ef8O.clubs;')
-    // console.log('SELECT * FROM pefl.clubs;');
-    // dbQuery('SELECT * FROM pefl.clubs;')
+    //console.log('SELECT * FROM Yu6lr7ef8O.clubs;');
+    //dbQuery('SELECT * FROM Yu6lr7ef8O.clubs;')
+    console.log('SELECT * FROM pefl.clubs;');
+    dbQuery('SELECT * FROM pefl.clubs;')
     .then(result => {
         global.clubsBase = []; 
         try {
@@ -31,8 +31,8 @@ module.exports = function() {
     })
     .then( ()=> {
         global.nationBase = [];
-        return dbQuery('SELECT * FROM Yu6lr7ef8O.nations_short;');
-        // return dbQuery('SELECT * FROM pefl.nations_short;');
+        //return dbQuery('SELECT * FROM Yu6lr7ef8O.nations_short;');
+        return dbQuery('SELECT * FROM pefl.nations_short;');
     })
     .then((nations) => {
         nations.rows.forEach(nation => {
