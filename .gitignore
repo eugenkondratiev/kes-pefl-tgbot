@@ -9,4 +9,7 @@ data
 data/*
 *log.txt
 package-lock.json
+logs
+*.log
+
 

@@ -116,14 +116,41 @@ window.addEventListener('load', () => {
             })
             .catch(err => console.log(err.message));
     });
-    document.querySelector("#nation-button").addEventListener('click', (e) => {
+    document.querySelector("#latin-button").addEventListener('click', async (e) => {
         e.preventDefault();
-        searchByNation()
-            .then(resp => {
-                ;
-            })
-            .catch(err => console.log(err.message));
+        console.log('search latin letters in names! ');
+
+        try {
+            const resp = await ajaxGet("GET", `${API_HOST}/latins`);
+            try {
+                const answer = JSON.parse(resp);
+                console.log(JSON.stringify(answer));
+
+                // const searchTarget = document.getElementById("by-name");
+                if (answer.fail) {
+                    searchTarget.textContent = answer.fail;
+                    return
+                }
+                searchTarget.innerHTML = answer.map((row, i) => {
+                    row.unshift(i+1+". ");
+                    row.push("<br>");
+                    return row.join("  -   ");
+                })
+            } catch (error) {
+                console.log(error.message);
+            }
+        } catch (error) {
+            console.log("search error ", error.message)
+        }
     });
+    // document.querySelector("#nation-button").addEventListener('click', (e) => {
+    //     e.preventDefault();
+    //     searchByNation()
+    //         .then(resp => {
+    //             ;
+    //         })
+    //         .catch(err => console.log(err.message));
+    // });
     document.querySelector("#nation").addEventListener('change', (e) => {
         e.preventDefault();
         searchByNation()

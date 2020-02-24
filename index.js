@@ -210,6 +210,7 @@ setTimeout(()=> {
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
   // logic
+	dbPool.end();
 });
 
 process.on('exit', (code) => {

@@ -1,5 +1,6 @@
 ﻿const express = require('express');
 const app = express();
+const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 const bodyParser = require('body-parser');
@@ -8,6 +9,11 @@ const getPlayerRow = require('./model/form-player-string');
 const HOSTNAME = process.env.HOST || '95.158.47.15';
 const PORT = process.env.PORT || 3003;
 console.log(__dirname);
+
+const logger = require('morgan');
+const rfs = require('rotating-file-stream');
+const requestIp = require('request-ip');
+const expressip = require('express-ip');
 
 app.use("/public", express.static(__dirname + "/public"));
 app.use("/", express.static(__dirname + "/public"));
@@ -18,6 +24,11 @@ app.use(function (req, res, next) {
     next();
 });
 app.use(bodyParser.json());
+app.use(express.urlencoded({
+    extended: true
+}));
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser());
 
 app.use(function (req, res, next) {
     //res.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500") ;//"*");
@@ -29,6 +40,29 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+app.use(requestIp.mw())
+app.use(expressip().getIpInfoMiddleware);
+logger.token('type', function (req, res) {
+    return req.headers['content-type'];
+});
+logger.format('iplog', function (req, res) {
+    if (!req.ipInfo.country) {
+        return `${req.clientIp}`
+    }
+    const ipInfo = req.ipInfo;
+    return `${req.clientIp} - ${ipInfo.country} - ${ipInfo.region} - ${ipInfo.eu} - ${ipInfo.city} - [${ipInfo.ll}]  - ${ipInfo.area}`;
+});
+const accessLogStream = rfs.createStream('access.log', {
+    interval: '1d',
+    path: path.join(__dirname, 'logs')
+});
+const logFormat = ":iplog :remote-user [:date[iso]] :method \":url\" HTTP/:http-version :status :res[content-length] - :response-time ms";
+app.use(logger(logFormat, {
+    stream: accessLogStream
+}));
+
+
 
 app.get('/find', (req, res) => {
 
@@ -96,6 +130,26 @@ app.get('/exot', (req, res) => {
         });
     }
 
+})
+app.get('/latins', (req, res) => {
+
+    try {
+        const findResult = playersBase
+            .filter(pl => pl)
+            .filter(pl => pl[0].match(/[a-zA-Z]/g));
+        if (!findResult.length) {
+            res.json({
+                fail: "Не найдено"
+            });
+            return
+        }
+        res.json(findResult.map(getPlayerRow));
+    } catch (err) {
+        console.log(err);
+        res.json({
+            fail: err.message
+        });
+    }
 })
 
 app.get('/ids', (req, res) => {
