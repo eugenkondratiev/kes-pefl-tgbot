@@ -21,7 +21,7 @@
         <div class="form-wparper flex-center">
             <div class="input-wrapper">
                 <div class="string-inputs">
-                    <label for="player-name">Имя</label><input type="text" name="player-name" id="player-name" value="">
+                    <label for="player-name">Имя</label><input type="text" name="player-name" id="player-name" value="" placeholder="часть имени">
                 </div>
                 <button id="player-button">Найти</button>
             </div>
@@ -39,6 +39,28 @@
             </div>
             <div class="input-wrapper">
                 <button id="latin-button">Латинские символы</button>
+            </div>
+            <div class="input-wrapper">
+                <button id="all-doubles-button">Совпадения в базе</button>
+                <p>  на 03.03.20</p>
+            </div>
+            <div class="input-wrapper wrapped">
+                <div class="string-inputs">
+                    <label for="levi-name">Имя</label><input type="text" name="levi-name" id="levi-name" value="" placeholder="полное имя">
+                </div>
+                <button id="double-button">Поиск дубликатов</button>
+                <div class="string-inputs">
+                    <label for="levi-length">Расстояние</label>
+                    <select id="levi-length" class="number-selector">
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <button id="levi-button">Поиск по Левинштейну</button>
             </div>
         </div>
     </header>

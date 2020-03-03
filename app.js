@@ -1,6 +1,5 @@
 ﻿const express = require('express');
 const app = express();
-const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 const bodyParser = require('body-parser');
@@ -10,11 +9,7 @@ const HOSTNAME = process.env.HOST || '95.158.47.15';
 const PORT = process.env.PORT || 3003;
 console.log(__dirname);
 
-const logger = require('morgan');
-const rfs = require('rotating-file-stream');
-const requestIp = require('request-ip');
-const expressip = require('express-ip');
-
+const fs = require('fs');
 app.use("/public", express.static(__dirname + "/public"));
 app.use("/", express.static(__dirname + "/public"));
 
@@ -41,28 +36,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(requestIp.mw())
-app.use(expressip().getIpInfoMiddleware);
-logger.token('type', function (req, res) {
-    return req.headers['content-type'];
-});
-logger.format('iplog', function (req, res) {
-    if (!req.ipInfo.country) {
-        return `${req.clientIp}`
-    }
-    const ipInfo = req.ipInfo;
-    return `${req.clientIp} - ${ipInfo.country} - ${ipInfo.region} - ${ipInfo.eu} - ${ipInfo.city} - [${ipInfo.ll}]  - ${ipInfo.area}`;
-});
-const accessLogStream = rfs.createStream('access.log', {
-    interval: '1d',
-    path: path.join(__dirname, 'logs')
-});
-const logFormat = ":iplog :remote-user [:date[iso]] :method \":url\" HTTP/:http-version :status :res[content-length] - :response-time ms";
-app.use(logger(logFormat, {
-    stream: accessLogStream
-}));
-
-
+require('./utils/request-logger')(app);
 
 app.get('/find', (req, res) => {
 
@@ -85,19 +59,13 @@ app.get('/find', (req, res) => {
             });
             return
         }
-
-        // res.json(findResult);
         res.json(findResult.map(row => getPlayerRow(row)));
-
-        // 	 res.json({base: playersBase.length, findResult:findResult});
-        //res.json(_name);
     } catch (err) {
         console.log(err)
         res.json({
             fail: err.message
         });
     }
-
 })
 
 app.get('/exot', (req, res) => {
@@ -121,7 +89,7 @@ app.get('/exot', (req, res) => {
             return
         }
 
-        // res.json(findResult);
+        res.setHeader('Content-Type', 'application/json');
         res.json(findResult.map(getPlayerRow));
     } catch (err) {
         console.log(err);
@@ -132,17 +100,19 @@ app.get('/exot', (req, res) => {
 
 })
 app.get('/latins', (req, res) => {
+    const BAD_SYMBOLS_REGEXP = /[^А-ЯЁа-яё\-\s\`\.]/g;
 
     try {
         const findResult = playersBase
             .filter(pl => pl)
-            .filter(pl => pl[0].match(/[a-zA-Z]/g));
+            .filter(pl => pl[0].match(BAD_SYMBOLS_REGEXP));
         if (!findResult.length) {
             res.json({
                 fail: "Не найдено"
             });
             return
         }
+        res.setHeader('Content-Type', 'application/json');
         res.json(findResult.map(getPlayerRow));
     } catch (err) {
         console.log(err);
@@ -161,7 +131,114 @@ app.get('/ids', (req, res) => {
             pens: playersBase.filter(pl => +pl[4] == 1).length
         }
     });
+});
+
+app.get('/levi-find', (req, res) => {
+    const params = url.parse(req.url, true).query;
+    const leviDiff = parseInt(params["levi-length"]) || 2;
+    const _name = params["name"];
+
+    if (_name.length < 4 || leviDiff < 1 || leviDiff > 7) {
+        res.json({
+            fail: "Некорректный запрос"
+        });
+        return
+    }
+    try {
+        const calcLeviLength = require('./utils/levi-length');
+
+        const findResult = playersBase
+            .filter(pl => pl)
+            .filter(pl => {
+                const levi = +calcLeviLength(_name.toLocaleLowerCase(), pl[0].toLocaleLowerCase(), leviDiff);
+                if (levi < leviDiff) console.log(levi, _name, pl[0]);
+                return levi < leviDiff;
+            });
+        if (!findResult.length) {
+            res.json({
+                fail: "Не найдено"
+            });
+            return
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.json(findResult.map(getPlayerRow));
+    } catch (err) {
+        console.log(err);
+        res.json({
+            fail: err.message
+        });
+    }
 })
+
+app.get('/doubles-find', (req, res) => {
+    const params = url.parse(req.url, true).query;
+    const ageDiff = parseInt(params["age-diff"]) || 5;
+    const _name = params["name"];
+
+    if (_name.length < 2) {
+        res.json({
+            fail: "Некорректный запрос"
+        });
+        return
+    }
+    try {
+        const comparePlayersSmart = require('./utils/smart-names-comparator');
+
+        const findResult = playersBase
+            .filter(pl => pl)
+            .filter((pl, i) => {
+                const isSimilar = comparePlayersSmart(_name, pl[0]);
+                if (isSimilar) console.log(isSimilar, _name, pl[0]);
+                return isSimilar;
+            });
+        console.log(findResult.length)
+        if (!findResult.length) {
+            res.json({
+                fail: "Не найдено"
+            });
+            return
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.json(findResult.map(getPlayerRow));
+    } catch (err) {
+        console.log(err);
+        res.json({
+            fail: err.message
+        });
+    }
+})
+
+app.get('/calculate-doubles', (req, res) => {
+    const findDoubles = require('./utils/smart-players-compare');
+    const start = Date.now();
+    const answer = findDoubles();
+    console.log("answer.length - ", answer.length);
+    console.log(" doubles calculation time - ", Date.now() - start);
+    res.setHeader('Content-Type', 'application/json');
+    res.json("OK");
+})
+
+app.get('/doubles', (req, res) => {
+
+    fs.readFile(__dirname + "/doubles.json", (err, data) => {
+        if (err) {
+            console.error;
+            return;
+        }
+        try {
+        const rowData = JSON.parse(data);
+        const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(findResult);
+        } catch (error) {
+            console.error(error);
+        }
+    })
+        console.log(" doubles sending - ");
+
+    
+})
+
 app.get('/', (req, res) => {
     console.log("/ send index");
     res.sendFile(__dirname + "/index.html", err => {
@@ -175,7 +252,6 @@ app.get('/', (req, res) => {
 
 module.exports = () => {
     app.listen(PORT, () => {
-        // app.listen(PORT, HOSTNAME, () => {
         console.log(`Server running at http://${HOSTNAME}:${PORT}/`)
     })
 }
