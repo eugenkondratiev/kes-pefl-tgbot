@@ -1,7 +1,7 @@
 {
     "script" : "index.js",
     "watch": true,
-    "ignore_watch" : ["node_modules", "data", ".git", ".vscode", "actionlog.txt", "logs"],
+    "ignore_watch" : ["node_modules", "data", ".git", ".vscode", "actionlog.txt", "logs" , "logs\\*"],
     "watch_options" : {
         "followSymlinks" : false
     },
