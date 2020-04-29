@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nations stat</title>
-    <link rel="stylesheet" href="public/stat.css">
-    <!-- <link rel="stylesheet" href="/public/styles.css"> -->
+    <link rel="stylesheet" href="public/stat.min.css">
+    <!-- <link rel="stylesheet" href="public/stat.css"> -->
 </head>
 
 <body>
@@ -18,7 +18,7 @@
         <p> В основном повторяется функционал telegram бота</p>
         <p> Возможно, функционал будет улучшаться и разрастаться, если будет спрос и интересные задачи</p>
         <p id="current-stat"></p>
-        <div class="form-wparper flex-center">
+        <div class="form-wparper flex-center" accept-charset="utf-8">
             <div class="input-wrapper">
                 <div class="string-inputs">
                     <label for="player-name">Имя</label><input type="text" name="player-name" id="player-name" value="" placeholder="часть имени">
@@ -32,17 +32,16 @@
                         <option value="" selected>-</option>
 
                     </select>
-                    <!-- <label for="nation">Нация(id)</label><input type="text" name="nation" id="nation" value=""> -->
                 </div>
-                <!-- <button id="nation-button">Найти</button> -->
-
             </div>
             <div class="input-wrapper">
                 <button id="latin-button">Латинские символы</button>
             </div>
-            <div class="input-wrapper">
+            <div class="input-wrapper wrapped">
+                <p>Обновление <span>28.04.20</span>. </p><p> Прошлое <span>03.03.20</span>. </p>
                 <button id="all-doubles-button">Совпадения в базе</button>
-                <p>  на 03.03.20</p>
+                <button id="new-doubles-button">Новые</button>
+                <button id="fixed-doubles-button">Исправленные</button>
             </div>
             <div class="input-wrapper wrapped">
                 <div class="string-inputs">
@@ -70,8 +69,8 @@
     <!-- <section class="content-section" id="by-nation">
 
     </section> -->
-    <script src="public/stat.js"></script>
-    <!-- <script src="/public/app.js"></script> -->
+    <!-- <script src="public/stat.js"></script> -->
+    <script src="public/stat.min.js"></script>
 </body>
 
 </html>

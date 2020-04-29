@@ -15,8 +15,8 @@ console.log(__dirname);
 app.use(compression());
 
 const fs = require('fs');
-app.use("/public", express.static(__dirname + "/public", {maxAge : "3d"}));
-app.use("/", express.static(__dirname + "/public", {maxAge : "3d"}));
+app.use("/public", express.static(__dirname + "/public", { maxAge: "3d" }));
+app.use("/", express.static(__dirname + "/public", { maxAge: "3d" }));
 
 app.use(function (req, res, next) {
 
@@ -25,7 +25,8 @@ app.use(function (req, res, next) {
 });
 app.use(bodyParser.json());
 app.use(express.urlencoded({
-    extended: true
+    extended: true,
+    parameterLimit: 5000
 }));
 // const cookieParser = require('cookie-parser');
 // app.use(cookieParser());
@@ -35,7 +36,12 @@ app.use(useragent.express());
 
 app.use(function (req, res, next) {
     //res.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500") ;//"*");
-    const allowedOrigins = ['http://127.0.0.1:5500', 'https://eugenkondratiev.github.io/nations', 'http://127.0.0.1:3003', 'http://95.158.47.15'];
+    const allowedOrigins = ['http://127.0.0.1:5500', 'https://eugenkondratiev.github.io/nations',
+        'http://127.0.0.1:3003',
+        'http://95.158.47.15',
+        'http://95.158.47.15:3003',
+        'http://95.158.47.15:3001'
+    ];
     const origin = req.headers.origin;
     if (allowedOrigins.indexOf(origin) > -1) {
         res.setHeader('Access-Control-Allow-Origin', origin);
@@ -50,6 +56,7 @@ app.get('/find', (req, res) => {
 
     const params = url.parse(req.url, true).query;
     const _name = params["name"];
+    console.log(params);
     if (_name.length < 4) {
         res.json({
             fail: "Некорректный запрос"
@@ -226,7 +233,7 @@ app.get('/calculate-doubles', (req, res) => {
     res.json("OK");
 })
 
-app.get('/doubles', (req, res) => {
+app.get('/all-doubles', (req, res) => {
 
     fs.readFile(__dirname + "/doubles.json", (err, data) => {
         if (err) {
@@ -234,17 +241,59 @@ app.get('/doubles', (req, res) => {
             return;
         }
         try {
-        const rowData = JSON.parse(data);
-        const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
-        res.setHeader('Content-Type', 'application/json');
-        res.json(findResult);
+            const rowData = JSON.parse(data);
+            const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
+            res.setHeader('Content-Type', 'application/json');
+            res.json(findResult);
         } catch (error) {
             console.error(error);
         }
     })
-        console.log(" doubles sending - ");
+    console.log(" doubles sending - ");
 
-    
+
+})
+app.get('/fixed-doubles', async (req, res) => {
+
+    // fs.readFile(__dirname + "/doubles.json", (err, data) => {
+    //     if (err) {
+    //         console.error;
+    //         return;
+    //     }
+    const { readFixedDoubles } = require('./utils/_compare-results');
+    try {
+        const rowData = await readFixedDoubles();
+        const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(findResult);
+    } catch (error) {
+        console.error(error);
+    }
+    // })
+    console.log(" fixed doubles sending - ");
+
+
+})
+app.get('/new-doubles', async (req, res) => {
+
+    // fs.readFile(__dirname + "/doubles.json", (err, data) => {
+    //     if (err) {
+    //         console.error;
+    //         return;
+    //     }
+    const { readNewDoubles } = require('./utils/_compare-results');
+    try {
+        const rowData = await readNewDoubles();
+        const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(findResult);
+    } catch (error) {
+        console.error(error);
+    }
+    // })
+    console.log(" new doubles sending - ");
+
+
 })
 
 app.get('/', (req, res) => {

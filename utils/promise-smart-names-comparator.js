@@ -10,7 +10,7 @@ const pairsRegExp = pairs.map(pair => {
   });
 
 
-  function removeSimilarSymbols(pairToCompair,  _index) {
+  async function removeSimilarSymbols(pairToCompair,  _index) {
     let changes = 0;
       let index = _index;
       let a = pairToCompair[0];
@@ -51,16 +51,20 @@ const pairsRegExp = pairs.map(pair => {
       return {data: [a, b], changes : changes, index: index};
     }
 
-function compairPossibleDoubles(_a, _b) {
+async function compairPossibleDoubles(_a, _b) {
     let a = _a.toLocaleLowerCase().replace(/[\'\`\-]/g, "");
     let b = _b.toLocaleLowerCase().replace(/[\'\`\-]/g, "");
     if (!a.localeCompare(b)) return true;
     let changes = 0; let _index = 0;
     do {
-        const answer = removeSimilarSymbols([a, b], _index);
+      try {
+        const answer = await removeSimilarSymbols([a, b], _index);
         a = answer.data[0]; b = answer.data[1];
         _index = answer.index;
-        changes = answer.changes;
+        changes = answer.changes; 
+      } catch (error) {
+        console.error;
+      }
     } while (changes > 0);
 
     if (!a.localeCompare(b)) return true;
