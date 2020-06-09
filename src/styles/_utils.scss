@@ -1,0 +1,72 @@
+$main-colors : (back1: #C9F8B7,
+    back2: #A3DE8F,
+    back3: darken(#C9F8B7, 40%),
+    back4: darken(#C9F8B7, 10%),
+    back5: #8fc47e,
+);
+
+@function color($the-color) {
+    @return map-get($main-colors, $the-color)
+}
+
+;
+
+@function flex-calculate($elements, $pad: $padding / 2) {
+    @return calc(100% / $elements -$pad)
+}
+
+;
+
+$padding: 1rem;
+$margin: 1.5rem;
+$border : 2px;
+$radius: .5rem;
+
+$width-breakponts: (wide-phone: 360px,
+    tablet: 590px,
+    desktop : 840px,
+    wide-screen: 1020px,
+    extra-screen: 1777px,
+);
+
+@mixin mq($point) {
+    @media only screen and (min-width: map-get($map: $width-breakponts, $key: $point)) {
+        @content;
+    }
+}
+
+@mixin landscape {
+    @media only screen and (orientation : landscape) {
+        @content
+    }
+}
+
+@mixin light-shadow {
+    box-shadow: 1px 2px 3px lightgrey;
+
+}
+
+
+@mixin light-border {
+    border: solid 1px lightgray;
+    border-radius: 3px;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.flex-center-all {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+
+.wrapped {
+    flex-wrap: nowrap;
+}

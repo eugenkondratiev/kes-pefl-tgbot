@@ -1,0 +1,73 @@
+$tabs : 5;
+
+input[name="tabs"] {
+    display: none;
+
+    @for $i from 1 through $tabs {
+        &#tab-#{$i}:checked {
+            ~.search-tabs .tab:nth-child(#{$i}) {
+                display: block;
+            }
+
+            ~.tabs label:nth-child(#{$i}) {
+                background-color: color(back2);
+                border-bottom: solid $border *1.5 color(back3);
+            }
+        }
+    }
+}
+
+.tabs {
+    @extend .flex-center-all;
+    width: 100%;
+    height: 4rem;
+    flex-wrap: nowrap;
+    border-bottom: solid $border color(back4);
+
+    @include mq(tablet) {
+        height: 3rem;
+
+    }
+
+    label {
+        @extend .flex-center;
+        background-color: color(back4);
+
+        flex: 0 0 flex-calculate($tabs, $padding/3);
+        white-space: normal;
+        text-transform: uppercase;
+        text-align: center;
+        height: 100%;
+        font-size: 1.2rem;
+        padding: 0 $padding/3;
+        border: solid $border/2 color(back3);
+
+        border-radius: $radius $radius 0 0;
+
+        @include mq(tablet) {
+            padding: 0 $padding;
+            border-radius: $radius*2 $radius*2 0 0;
+
+        }
+
+        &:hover {
+            background-color: color(back1);
+        }
+    }
+}
+
+.search-tabs {
+    overflow: hidden;
+    // height: 17vh;
+    height: fit-content;
+    min-height: 15vh;
+    @include light-shadow;
+
+    // @include mq(tablet) {
+    //     height: 25vh;
+    // }
+
+    .tab {
+        display: none;
+    }
+}

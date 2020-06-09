@@ -1,4 +1,4 @@
-const compareNames = require('./smart-names-comparator');
+const compareNames = require('./promise-smart-names-comparator');
 const NOCLONES_AGE_DIFFERENSE = 6;
 
 async function comparePlayersSmart(player1, player2) {

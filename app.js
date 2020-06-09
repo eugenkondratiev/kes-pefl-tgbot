@@ -52,36 +52,6 @@ app.use(function (req, res, next) {
 
 require('./utils/request-logger')(app);
 
-app.get('/find', (req, res) => {
-
-    const params = url.parse(req.url, true).query;
-    const _name = params["name"];
-    console.log(params);
-    if (_name.length < 4) {
-        res.json({
-            fail: "Некорректный запрос"
-        });
-        return
-    }
-    try {
-        console.log("playersBase - ", playersBase.length)
-        const findResult = playersBase
-            .filter(pl => pl)
-            .filter(pl => pl[0].toLowerCase().includes(_name.toLowerCase()));
-        if (!findResult.length) {
-            res.json({
-                fail: "Не найдено"
-            });
-            return
-        }
-        res.json(findResult.map(row => getPlayerRow(row)));
-    } catch (err) {
-        console.log(err)
-        res.json({
-            fail: err.message
-        });
-    }
-})
 
 app.get('/exot', (req, res) => {
     const params = url.parse(req.url, true).query;
@@ -114,28 +84,7 @@ app.get('/exot', (req, res) => {
     }
 
 })
-app.get('/latins', (req, res) => {
-    const BAD_SYMBOLS_REGEXP = /[^А-ЯЁа-яё\-\s\`\.]/g;
 
-    try {
-        const findResult = playersBase
-            .filter(pl => pl)
-            .filter(pl => pl[0].match(BAD_SYMBOLS_REGEXP));
-        if (!findResult.length) {
-            res.json({
-                fail: "Не найдено"
-            });
-            return
-        }
-        res.setHeader('Content-Type', 'application/json');
-        res.json(findResult.map(getPlayerRow));
-    } catch (err) {
-        console.log(err);
-        res.json({
-            fail: err.message
-        });
-    }
-})
 
 app.get('/ids', (req, res) => {
     res.json({
@@ -148,153 +97,11 @@ app.get('/ids', (req, res) => {
     });
 });
 
-app.get('/levi-find', (req, res) => {
-    const params = url.parse(req.url, true).query;
-    const leviDiff = parseInt(params["levi-length"]) || 2;
-    const _name = params["name"];
+const doubles = require('./routes/doubles');
+const finds = require('./routes/find');
 
-    if (_name.length < 4 || leviDiff < 1 || leviDiff > 7) {
-        res.json({
-            fail: "Некорректный запрос"
-        });
-        return
-    }
-    try {
-        const calcLeviLength = require('./utils/levi-length');
-
-        const findResult = playersBase
-            .filter(pl => pl)
-            .filter(pl => {
-                const levi = +calcLeviLength(_name.toLocaleLowerCase(), pl[0].toLocaleLowerCase(), leviDiff);
-                if (levi < leviDiff) console.log(levi, _name, pl[0]);
-                return levi < leviDiff;
-            });
-        if (!findResult.length) {
-            res.json({
-                fail: "Не найдено"
-            });
-            return
-        }
-        res.setHeader('Content-Type', 'application/json');
-        res.json(findResult.map(getPlayerRow));
-    } catch (err) {
-        console.log(err);
-        res.json({
-            fail: err.message
-        });
-    }
-})
-
-app.get('/doubles-find', (req, res) => {
-    const params = url.parse(req.url, true).query;
-    const ageDiff = parseInt(params["age-diff"]) || 5;
-    const _name = params["name"];
-
-    if (_name.length < 2) {
-        res.json({
-            fail: "Некорректный запрос"
-        });
-        return
-    }
-    try {
-        const comparePlayersSmart = require('./utils/smart-names-comparator');
-
-        const findResult = playersBase
-            .filter(pl => pl)
-            .filter((pl, i) => {
-                const isSimilar = comparePlayersSmart(_name, pl[0]);
-                if (isSimilar) console.log(isSimilar, _name, pl[0]);
-                return isSimilar;
-            });
-        console.log(findResult.length)
-        if (!findResult.length) {
-            res.json({
-                fail: "Не найдено"
-            });
-            return
-        }
-        res.setHeader('Content-Type', 'application/json');
-        res.json(findResult.map(getPlayerRow));
-    } catch (err) {
-        console.log(err);
-        res.json({
-            fail: err.message
-        });
-    }
-})
-
-app.get('/calculate-doubles', (req, res) => {
-    const findDoubles = require('./utils/smart-players-compare');
-    const start = Date.now();
-    const answer = findDoubles();
-    console.log("answer.length - ", answer.length);
-    console.log(" doubles calculation time - ", Date.now() - start);
-    res.setHeader('Content-Type', 'application/json');
-    res.json("OK");
-})
-
-app.get('/all-doubles', (req, res) => {
-
-    fs.readFile(__dirname + "/doubles.json", (err, data) => {
-        if (err) {
-            console.error;
-            return;
-        }
-        try {
-            const rowData = JSON.parse(data);
-            const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
-            res.setHeader('Content-Type', 'application/json');
-            res.json(findResult);
-        } catch (error) {
-            console.error(error);
-        }
-    })
-    console.log(" doubles sending - ");
-
-
-})
-app.get('/fixed-doubles', async (req, res) => {
-
-    // fs.readFile(__dirname + "/doubles.json", (err, data) => {
-    //     if (err) {
-    //         console.error;
-    //         return;
-    //     }
-    const { readFixedDoubles } = require('./utils/_compare-results');
-    try {
-        const rowData = await readFixedDoubles();
-        const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
-        res.setHeader('Content-Type', 'application/json');
-        res.json(findResult);
-    } catch (error) {
-        console.error(error);
-    }
-    // })
-    console.log(" fixed doubles sending - ");
-
-
-})
-app.get('/new-doubles', async (req, res) => {
-
-    // fs.readFile(__dirname + "/doubles.json", (err, data) => {
-    //     if (err) {
-    //         console.error;
-    //         return;
-    //     }
-    const { readNewDoubles } = require('./utils/_compare-results');
-    try {
-        const rowData = await readNewDoubles();
-        const findResult = rowData.map(coincidence => coincidence.map(getPlayerRow));
-        res.setHeader('Content-Type', 'application/json');
-        res.json(findResult);
-    } catch (error) {
-        console.error(error);
-    }
-    // })
-    console.log(" new doubles sending - ");
-
-
-})
+app.use('/doubles', doubles);
+app.use('/find', finds);
 
 app.get('/', (req, res) => {
     console.log("/ send index");

@@ -5,72 +5,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nations stat</title>
+    <!-- <link rel="stylesheet" href="styles/stat.min.css"> -->
+    <script src="https://kit.fontawesome.com/a6bf89267b.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="public/stat.min.css">
-    <!-- <link rel="stylesheet" href="public/stat.css"> -->
 </head>
 
 <body>
     <header class="find-form">
-        <h5>Зачаточный каркас страницы поиска игроков</h5>
-        <!-- <h2>Идет переход на другую БД. Данные временно некорректны</h2> -->
-        <p> Просто небольшая надстройка над <a href="https://mylene.net.ru/pefl/nations/" target="_blank">сайтом
-                статиски национальностей.</a> </p>
-        <p> В основном повторяется функционал telegram бота</p>
-        <p> Возможно, функционал будет улучшаться и разрастаться, если будет спрос и интересные задачи</p>
-        <p id="current-stat"></p>
-        <div class="form-wparper flex-center" accept-charset="utf-8">
-            <div class="input-wrapper">
-                <div class="string-inputs">
-                    <label for="player-name">Имя</label><input type="text" name="player-name" id="player-name" value="" placeholder="часть имени">
-                </div>
-                <button id="player-button">Найти</button>
-            </div>
-            <div class="input-wrapper">
-                <div class="string-inputs">
-                    <label for="nation">Нация</label>
-                    <select id="nation">
-                        <option value="" selected>-</option>
+        <!-- <h5>Зачаточный каркас страницы поиска игроков</h5> -->
+        <p id="current-stat">Всего игроков: <span id="base-all"></span>, школьников: <span id="base-school"></span>, пенсионеров: <span id="base-pens"></span></p>
+        <input type="radio" name="tabs" id="tab-1" checked>
+        <input type="radio" name="tabs" id="tab-2">
+        <input type="radio" name="tabs" id="tab-3">
+        <input type="radio" name="tabs" id="tab-4">
+        <input type="radio" name="tabs" id="tab-5">
+        <nav class="tabs">
+            <label for="tab-1">Главная</label>
+            <label for="tab-2">Часть ИМЕНи</label>
+            <label for="tab-3">полное имя</label>
+            <label for="tab-4">по нации</label>
+            <label for="tab-5">дубликаты</label>
+        </nav>
+        <div class="search-tabs" accept-charset="utf-8">
+            <div class="tab">
+                <!-- <h2>Идет переход на другую БД. Данные временно некорректны</h2> -->
+                <p> Просто небольшая надстройка над <a href="https://mylene.net.ru/pefl/nations/" target="_blank">сайтом
+                        статистики национальностей.</a> В основном повторяется функционал телеграм бота <a
+                        href="tg://resolve?domain=KesPEFLbot" rel="noopener noreferrer">@KesPEFLbot</a> </p>
+                <p> Возможно, функционал будет улучшаться и разрастаться, если будет спрос и интересные задачи</p>
 
-                    </select>
+            </div>
+            <div class="tab">
+                <p>Поиск игроков по части имени (более трех символов)</p>
+                <div class="input-wrapper">
+                    <div class="string-inputs">
+                        <label for="player-name">Часть имени</label><input type="text" name="player-name"
+                            id="player-name" value="" placeholder="часть имени">
+                    </div>
+                    <button id="player-button">Найти</button>
+                </div>
+                <div class="input-wrapper">
+                    <p>Поиск игроков с "некорректными символами" : латиница, другие кавычки кроме ` и т.д. </p>
+                    <button id="latin-button">Найти</button>
                 </div>
             </div>
-            <div class="input-wrapper">
-                <button id="latin-button">Латинские символы</button>
-            </div>
-            <div class="input-wrapper wrapped">
-                <p>Обновление <span>28.04.20</span>. </p><p> Прошлое <span>03.03.20</span>. </p>
-                <button id="all-doubles-button">Совпадения в базе</button>
-                <button id="new-doubles-button">Новые</button>
-                <button id="fixed-doubles-button">Исправленные</button>
-            </div>
-            <div class="input-wrapper wrapped">
-                <div class="string-inputs">
-                    <label for="levi-name">Имя</label><input type="text" name="levi-name" id="levi-name" value="" placeholder="полное имя">
+            <div class="tab">
+                <p>Поиск дубликатов по полному имени.</p>
+                <p> Совпадения в именах игроков определяются по <em class="tooltiped-string">парам сходных групп
+                        символов</em> <span>
+                            <a class="btn btn-small btn-info" href="#">
+                                <i class="fas fa-info fa-lg fa-border"></i> 
+                            </a>    
+                        </span> на сходных позициях в строке.
+                </p>
+               
+                 <div class="input-wrapper wrapped">
+                    <div class="string-inputs">
+                        <label for="levi-name">Имя</label><input type="text" name="levi-name" id="levi-name" value=""
+                            placeholder="полное имя">
+                    </div>
+                    <button id="double-button">Поиск дубликатов</button>
+                    <br>
                 </div>
-                <button id="double-button">Поиск дубликатов</button>
-                <div class="string-inputs">
-                    <label for="levi-length">Расстояние</label>
-                    <select id="levi-length" class="number-selector">
-                        <option value="2">2</option>
-                        <option value="3" selected>3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                    </select>
+                <p>Поиск по методу Левинштейна состоит в определении разницы в количестве символов между введенным
+                    полным именем и проверяемой строкой ("расстояния")</p>
+                <p>Учитывается замена, вставка и удаление символа.</p>
+                <div class="input-wrapper wrapped">
+                    <br>
+                    <div class="string-inputs">
+                        <label for="levi-length">Расстояние</label>
+                        <select id="levi-length" class="number-selector">
+                            <option value="2">2</option>
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                        </select>
+                    </div>
+                    <button id="levi-button">Поиск по Левинштейну</button>
                 </div>
-                <button id="levi-button">Поиск по Левинштейну</button>
+            </div>
+            <div class="tab">
+                <div class="input-wrapper">
+                    <div class="string-inputs">
+                        <label for="nation">Нация</label>
+                        <select id="nation">
+                            <option value="" selected>-</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="tab">
+                <div class="input-wrapper wrapped">
+                    <p> Совпадения в именах игроков ищутся по методу "поиска дубликатов", определяя <span
+                            class="tooltiped-string">пары сходных групп
+                            символов</span> на сходных позиция в строке.
+                    </p>
+                    <p>Обновление <span class="previous-base-updated">28.04.20</span>. </p>
+                    <p> Прошлое <span class="last-base-updated">03.03.20</span>. </p>
+                    <button id="all-doubles-button">Совпадения в базе</button>
+                    <button id="new-doubles-button">Новые</button>
+                    <button id="fixed-doubles-button">Исправленные</button>
+                </div>
             </div>
         </div>
-    </header>
-    <section class="content-section" id="search-result">
 
-    </section>
+
+    </header>
+    <main class="content-section">
+        <p><span><i class="fas fa-arrows-alt fa  fa-border fa-pull-right" aria-hidden="true"></i></span></p>
+        <div id="search-result">
+
+        </div>
+    </main>
+    <footer></footer>
     <!-- <section class="content-section" id="by-nation">
 
     </section> -->
-    <!-- <script src="public/stat.js"></script> -->
     <script src="public/stat.min.js"></script>
+    <!-- <script src="stat.min.js"></script> -->
 </body>
 
 </html>

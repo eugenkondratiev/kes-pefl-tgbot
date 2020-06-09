@@ -1,0 +1,65 @@
+.find-form {
+    padding: $padding/2 $padding/2;
+    // height: 30vh;
+}
+
+.form-wrapper {
+    width: 100vw;
+}
+
+.input-wrapper {
+
+    display: flex;
+    flex: 0 0 calc(30% - .5rem);
+    flex-wrap: nowrap;
+    margin: .3rem;
+    padding: .3rem;
+    // @include light-shadow;
+    // @include light-border;
+
+    // display: none;
+
+    & select {
+        width: 20ch;
+        height: 1.5rem;
+    }
+
+    & button {
+        margin: $margin/4;
+        padding: $padding/4 $padding/2;
+    }
+
+    & .number-selector {
+        width: 5ch;
+    }
+
+    & p {
+        // display: flex;
+        display: inline;
+
+        @include mq(tablet) {
+            display: inline;
+        }
+    }
+
+}
+
+.string-inputs {
+    justify-content: center;
+    flex-wrap: nowrap;
+    display: flex;
+    align-items: center;
+
+    & input {
+        width: 18ch;
+        margin-left: $margin /2;
+    }
+
+
+}
+
+
+#levi-button,
+#double-button {
+    width: 20ch;
+}

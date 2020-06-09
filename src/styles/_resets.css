@@ -1,0 +1,57 @@
+blockquote,
+body,
+button,
+dd,
+dl,
+dt,
+fieldset,
+figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+html,
+iframe,
+input,
+legend,
+li,
+menu,
+ol,
+p,
+pre,
+select,
+td,
+textarea,
+th,
+ul {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body,
+main,
+div,
+section{
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+}

@@ -1,6 +1,6 @@
-﻿const peflSearcher = require('./pefl-searcher');
-const getClubUrl = peflSearcher.prototype.getClubUrl;
-
+// const peflSearcher = require('./pefl-searcher');
+const getClubUrl = require('./pefl-searcher').prototype.getClubUrl;
+const pefl_host = 'plug.php';
 const pefl = 'http://pefl.ru/';
 
 module.exports = (row) => {
