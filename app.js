@@ -7,7 +7,7 @@ dotenv.config();
 const bodyParser = require('body-parser');
 const url = require('url');
 const getPlayerRow = require('./model/form-player-string');
-const HOSTNAME = process.env.HOST || '95.158.47.15';
+const HOSTNAME = process.env.HOST || '95.158.44.52';
 const PORT = process.env.PORT || 3003;
 process.env.NODE_ENV = "production";
 console.log(__dirname);
@@ -19,7 +19,6 @@ app.use("/public", express.static(__dirname + "/public", { maxAge: "3d" }));
 app.use("/", express.static(__dirname + "/public", { maxAge: "3d" }));
 
 app.use(function (req, res, next) {
-
     console.log("request - ", req.path);
     next();
 });
@@ -33,7 +32,6 @@ app.use(express.urlencoded({
 
 const useragent = require('express-useragent');
 app.use(useragent.express());
-
 app.use(function (req, res, next) {
     //res.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500") ;//"*");
     const allowedOrigins = ['http://127.0.0.1:5500', 'https://eugenkondratiev.github.io/nations',

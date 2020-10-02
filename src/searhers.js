@@ -1,7 +1,7 @@
 const renderDoubles = require('./renders').renderDoubles;
 const renderResults = require('./renders').renderResults;
 
-const API_HOST = "http://95.158.47.15:3003";
+const API_HOST = "http://95.158.44.52:3003";
 // const API_HOST = "http://127.0.0.1:3003";
 const ajaxGet = require('./utils/ajaxwrap');
 

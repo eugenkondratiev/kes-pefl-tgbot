@@ -224,9 +224,8 @@ process.on('beforeExit', (code) => {
 });
 
 try {
-
- peflServer();
-startUp(); 
+ 	peflServer();
+	startUp(); 
 
 } catch (error) {
   console.log("main bot loop error - ", error);
